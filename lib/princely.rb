@@ -48,10 +48,14 @@ class Princely
   end
 
   def find_prince_executable
-    if ruby_platform =~ /mswin32/
-      "C:/Program Files/Prince/Engine/bin/prince"
+    if !ENV["PRINCELY_BIN"].nil?
+      ENV["PRINCELY_BIN"].dup   # Duplicate as the ENV string will be frozen
     else
-      `which prince`.chomp
+      if ruby_platform =~ /mswin32/
+        "C:/Program Files/Prince/Engine/bin/prince"
+      else
+        `which prince`.chomp
+      end
     end
   end
 
@@ -89,7 +93,7 @@ class Princely
     path = self.exe_path()
     # Don't spew errors to the standard out...and set up to take IO
     # as input and output
-    path << ' --silent - -o -'
+    path << '  - -o -'
 
     # Show the command used...
     logger.info "\n\nPRINCE XML PDF COMMAND"
@@ -110,7 +114,7 @@ class Princely
     path = self.exe_path()
     # Don't spew errors to the standard out...and set up to take IO
     # as input and output
-    path << " --silent - -o '#{output_file}' >> '#{log_file}' 2>> '#{log_file}'"
+    path << " - -o '#{output_file}' >> '#{log_file}' 2>> '#{log_file}'"
 
     # Show the command used...
     logger.info "\n\nPRINCE XML PDF COMMAND"

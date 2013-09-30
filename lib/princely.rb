@@ -18,7 +18,7 @@ require 'logger'
 require 'princely/rails' if defined?(Rails)
 
 class Princely
-  attr_accessor :exe_path, :style_sheets, :log_file, :logger
+  attr_accessor :exe_path, :style_sheets, :scripts, :log_file, :logger
 
   # Initialize method
   #
@@ -28,7 +28,8 @@ class Princely
     raise "Cannot find prince command-line app in $PATH" if @exe_path.length == 0
     raise "Cannot find prince command-line app at #{@exe_path}" if @exe_path && !File.executable?(@exe_path)
     @style_sheets = ''
-    @cmd_args = ''
+    @scripts = ''
+    @cmd_args = ' > out.js '
     @log_file = options[:log_file]
     @logger = options[:logger]
   end
@@ -39,8 +40,8 @@ class Princely
 
   def log_file
     @log_file ||= defined?(Rails) ?
-            Rails.root.join("log/prince.log") :
-            File.expand_path(File.dirname(__FILE__) + "/log/prince.log")
+        Rails.root.join("log/prince.log") :
+        File.expand_path(File.dirname(__FILE__) + "/log/prince.log")
   end
 
   def ruby_platform
@@ -67,6 +68,14 @@ class Princely
       @style_sheets << " -s #{sheet} "
     end
   end
+  # Sets stylesheets...
+  # Can pass in multiple paths for css files.
+  #
+  def add_scripts(*scripts)
+    for script in scripts do
+      @scripts << " --javascript --script #{script} "
+    end
+  end
 
   # Sets arbitrary command line arguments
   def add_cmd_args(str)
@@ -79,8 +88,9 @@ class Princely
   def exe_path
     # Add any standard cmd line arguments we need to pass
     @exe_path << " --input=html --server --log=#{log_file} -v "
-    @exe_path << @cmd_args
     @exe_path << @style_sheets
+    @exe_path << @scripts
+    @exe_path << @cmd_args
     return @exe_path
   end
 
@@ -102,6 +112,7 @@ class Princely
 
     # Actually call the prince command, and pass the entire data stream back.
     pdf = IO.popen(path, "w+")
+    pdf.binmode
     pdf.puts(string)
     pdf.close_write
     result = pdf.gets(nil)
@@ -123,6 +134,7 @@ class Princely
 
     # Actually call the prince command, and pass the entire data stream back.
     pdf = IO.popen(path, "w+")
+    pdf.binmode
     pdf.puts(string)
     pdf.close
   end

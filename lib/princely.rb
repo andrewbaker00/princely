@@ -29,7 +29,7 @@ class Princely
     raise "Cannot find prince command-line app at #{@exe_path}" if @exe_path && !File.executable?(@exe_path)
     @style_sheets = ''
     @scripts = ''
-    @cmd_args = ' > out.js '
+    @cmd_args = ' '
     @log_file = options[:log_file]
     @logger = options[:logger]
   end
@@ -103,7 +103,7 @@ class Princely
     path = self.exe_path()
     # Don't spew errors to the standard out...and set up to take IO
     # as input and output
-    path << '  - -o -'
+    path << '--script out.js  -  -o - '
 
     # Show the command used...
     logger.info "\n\nPRINCE XML PDF COMMAND"
@@ -125,7 +125,7 @@ class Princely
     path = self.exe_path()
     # Don't spew errors to the standard out...and set up to take IO
     # as input and output
-    path << " - -o '#{output_file}' >> '#{log_file}' 2>> '#{log_file}'"
+    path << " - -o '#{output_file}' >> out.js 2>> out2.js"
 
     # Show the command used...
     logger.info "\n\nPRINCE XML PDF COMMAND"

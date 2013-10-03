@@ -23,13 +23,13 @@ module PdfHelper
     options[:layout] ||= false
     options[:template] ||= File.join(controller_path,action_name)
 
-    prince = Princely.new()
+    prince = Princely.new(options)
     # Sets style sheets on PDF renderer
     prince.add_style_sheets(*options[:stylesheets].collect{|style| asset_file_path(style)})
     # Sets scripts on PDF renderer
     prince.add_scripts(*options[:javascripts].collect{|script| asset_file_path(script)})
 
-    html_string = render_to_string(:template => options[:template], :layout => options[:layout])
+    html_string = render_to_string(options)
 
     html_string = localize_html_string(html_string)
 

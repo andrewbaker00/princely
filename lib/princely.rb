@@ -129,7 +129,7 @@ class Princely
     path = self.exe_path()
     # Don't spew errors to the standard out...and set up to take IO
     # as input and output
-    path << " - -o '#{output_file}' "
+    path << " - -o #{output_file} "
 
     # add out
 

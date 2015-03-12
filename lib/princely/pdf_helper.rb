@@ -16,9 +16,9 @@ module PdfHelper
     end
   end
 
+  private
 
-
-  def self.make_pdf(options = {})
+  def make_pdf(options = {})
     options[:stylesheets] ||= []
     options[:javascripts] ||= []
     options[:layout] ||= false
@@ -41,8 +41,6 @@ module PdfHelper
       prince.pdf_from_string(html_string)
     end
   end
-
-  private
 
   def localize_html_string(html_string)
     # Make all paths relative, on disk paths...

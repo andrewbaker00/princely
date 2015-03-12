@@ -18,7 +18,7 @@ module PdfHelper
 
 
 
-  def make_pdf(options = {})
+  def self.make_pdf(options = {})
     options[:stylesheets] ||= []
     options[:javascripts] ||= []
     options[:layout] ||= false
